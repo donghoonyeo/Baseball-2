@@ -14,18 +14,8 @@ public:
 		question(question) {}
 
 	GuessResult guess(const string& guessNumber) {
-		assertIllegalArgument(guessNumber);
-		GuessResult result = { false, 0, 0 };
-
-		result.strikes = checkStrikesCnt(guessNumber);
-		if (result.strikes == question.size()) {
-			result.solved = true;
-			return result;
-		}
-
-		result.balls = checkBallsCnt(guessNumber);
-		
-		return result;
+		assertIllegalArgument(guessNumber);		
+		return checkResult(guessNumber);
 	}
 
 	void assertIllegalArgument(const string& guessNumber)
@@ -42,6 +32,9 @@ public:
 			throw invalid_argument("Must not have the same number");
 	}
 
+private:
+	string question;
+
 	bool isDuplicatedNumber(const string& guessNumber)
 	{
 		return guessNumber[0] == guessNumber[1]
@@ -51,19 +44,20 @@ public:
 
 	int checkStrikesCnt(const string& guessNumber) {
 		int strikesCnt = 0;
-		for (int i = 0; i < question.size(); i++) {
-			if (guessNumber[i] == question[i])
+		for (int index = 0; index < question.size(); index++) {
+			if (guessNumber[index] == question[index]) {
 				strikesCnt++;
+			}
 		}
 		return strikesCnt;
 	}
 
 	int checkBallsCnt(const string& guessNumber) {
 		int ballCnt = 0;
-		for (int i = 0; i < question.size(); i++) {
-			for (int j = 0; j < question.size(); j++) {
-				if (i == j) continue;
-				if (guessNumber[i] == question[j]) {
+		for (int guessIndex = 0; guessIndex < guessNumber.size(); guessIndex++) {
+			for (int questIndex = 0; questIndex < question.size(); questIndex++) {
+				if (guessIndex == questIndex) continue;
+				if (guessNumber[guessIndex] == question[questIndex]) {
 					ballCnt++;
 					break;
 				}
@@ -72,6 +66,14 @@ public:
 		return ballCnt;
 	}
 
-private:
-	string question;
+	GuessResult checkResult(const string& guessNumber) {
+		GuessResult result = { false, 0, 0 };
+		result.strikes = checkStrikesCnt(guessNumber);
+		if (result.strikes == question.size()) {
+			result.solved = true;
+			return result;
+		}
+		result.balls = checkBallsCnt(guessNumber);
+		return result;
+	}
 };

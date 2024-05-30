@@ -15,12 +15,13 @@ public:
 
 	GuessResult guess(const string& guessNumber) {
 		assertIllegalArgument(guessNumber);
-		if (guessNumber == question)
-			return { true, 3, 0 };
-		else if (guessNumber == "143")
-			return { false, 2, 0 };
+		GuessResult result = { false, 0, 0 };
 
-		return { false, 0, 0 };
+		result.strikes = checkStrikesCnt(guessNumber);
+		if (result.strikes == question.size())
+			result.solved = true;
+		
+		return result;
 	}
 
 	void assertIllegalArgument(const string& guessNumber)
@@ -42,6 +43,15 @@ public:
 		return guessNumber[0] == guessNumber[1]
 			|| guessNumber[0] == guessNumber[2]
 			|| guessNumber[1] == guessNumber[2];
+	}
+
+	int checkStrikesCnt(const string& guessNumber) {
+		int strikesCnt = 0;
+		for (int i = 0; i < question.size(); i++) {
+			if (guessNumber[i] == question[i])
+				strikesCnt++;
+		}
+		return strikesCnt;
 	}
 
 private:

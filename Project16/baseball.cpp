@@ -18,8 +18,12 @@ public:
 		GuessResult result = { false, 0, 0 };
 
 		result.strikes = checkStrikesCnt(guessNumber);
-		if (result.strikes == question.size())
+		if (result.strikes == question.size()) {
 			result.solved = true;
+			return result;
+		}
+
+		result.balls = checkBallsCnt(guessNumber);
 		
 		return result;
 	}
@@ -52,6 +56,20 @@ public:
 				strikesCnt++;
 		}
 		return strikesCnt;
+	}
+
+	int checkBallsCnt(const string& guessNumber) {
+		int ballCnt = 0;
+		for (int i = 0; i < question.size(); i++) {
+			for (int j = 0; j < question.size(); j++) {
+				if (i == j) continue;
+				if (guessNumber[i] == question[j]) {
+					ballCnt++;
+					break;
+				}
+			}
+		}
+		return ballCnt;
 	}
 
 private:
